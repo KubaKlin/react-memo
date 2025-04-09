@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { UsersList } from './components/UsersList/UsersList';
@@ -33,11 +33,13 @@ const App = () => {
     fetchData();
   }, []);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredUsers = useMemo(() => {
+    return users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [users, searchQuery]);
 
   return (
     <Container>
