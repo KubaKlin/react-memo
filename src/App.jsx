@@ -33,13 +33,25 @@ const App = () => {
     fetchData();
   }, []);
 
+  const transformedUsers = useMemo(() => {
+    return users.map(user => ({
+      ...user,
+      posts: posts
+        .filter(post => post.userId === user.id)
+        .map(post => ({
+          ...post,
+          comments: comments.filter(comment => comment.postId === post.id)
+        }))
+    }));
+  }, [users, posts, comments]);
+
   const filteredUsers = useMemo(() => {
-    return users.filter(
+    return transformedUsers.filter(
       (user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [users, searchQuery]);
+  }, [transformedUsers, searchQuery]);
 
   return (
     <Container>
@@ -48,7 +60,7 @@ const App = () => {
           Users posts with comments
         </Typography>
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        <UsersList users={filteredUsers} posts={posts} comments={comments} />
+        <UsersList users={filteredUsers} />
       </Box>
     </Container>
   );

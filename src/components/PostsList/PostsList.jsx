@@ -1,7 +1,7 @@
 import { Box, List, Typography } from '@mui/material';
 import { PostComments } from '../PostComments/PostComments';
 
-export const PostsList = ({ posts, comments }) => {
+export const PostsList = ({ posts }) => {
   return (
     <List>
       {posts.map((post) => (
@@ -21,9 +21,7 @@ export const PostsList = ({ posts, comments }) => {
           <Typography variant="body1" sx={{ mt: 1 }}>
             {post.body}
           </Typography>
-          <PostComments
-            comments={comments.filter((comment) => comment.postId === post.id)}
-          />
+          <PostComments comments={post.comments} />
         </Box>
       ))}
     </List>

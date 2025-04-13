@@ -1,11 +1,7 @@
 import { List, ListItem, Typography, Box } from '@mui/material';
 import { UsersPosts } from '../UsersPosts/UsersPosts';
 
-export const UsersList = ({ users, posts, comments }) => {
-  const getUserPostsCount = (userId) => {
-    return posts.filter((post) => post.userId === userId).length;
-  };
-
+export const UsersList = ({ users }) => {
   return (
     <List sx={{ background: '#efefef' }}>
       {users.map((user) => (
@@ -19,16 +15,12 @@ export const UsersList = ({ users, posts, comments }) => {
             }}
           >
             <Typography variant="h6" component="div">
-              {user.name} - ({getUserPostsCount(user.id)} posts)
+              {user.name} - ({user.posts.length} posts)
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {user.email}
             </Typography>
-            <UsersPosts
-              user={user}
-              posts={posts.filter((post) => post.userId === user.id)}
-              comments={comments}
-            />
+            <UsersPosts posts={user.posts} />
           </Box>
         </ListItem>
       ))}
