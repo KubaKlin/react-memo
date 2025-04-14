@@ -34,14 +34,28 @@ const App = () => {
   }, []);
 
   const transformedUsers = useMemo(() => {
-    return users.map(user => ({
+    const postsByUserId = posts.reduce((userPosts, post) => {
+      if (!userPosts[post.userId]) {
+        userPosts[post.userId] = [];
+      }
+      userPosts[post.userId].push(post);
+      return userPosts;
+    }, {});
+
+    const commentsByPostId = comments.reduce((postComments, comment) => {
+      if (!postComments[comment.postId]) {
+        postComments[comment.postId] = [];
+      }
+      postComments[comment.postId].push(comment);
+      return postComments;
+    }, {});
+
+    return users.map((user) => ({
       ...user,
-      posts: posts
-        .filter(post => post.userId === user.id)
-        .map(post => ({
-          ...post,
-          comments: comments.filter(comment => comment.postId === post.id)
-        }))
+      posts: (postsByUserId[user.id] || []).map((post) => ({
+        ...post,
+        comments: commentsByPostId[post.id] || [],
+      })),
     }));
   }, [users, posts, comments]);
 
