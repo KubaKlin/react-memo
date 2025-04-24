@@ -34,14 +34,6 @@ const App = () => {
   }, []);
 
   const transformedUsers = useMemo(() => {
-    const postsByUserId = posts.reduce((userPosts, post) => {
-      if (!userPosts[post.userId]) {
-        userPosts[post.userId] = [];
-      }
-      userPosts[post.userId].push(post);
-      return userPosts;
-    }, {});
-
     const commentsByPostId = comments.reduce((postComments, comment) => {
       if (!postComments[comment.postId]) {
         postComments[comment.postId] = [];
@@ -50,12 +42,20 @@ const App = () => {
       return postComments;
     }, {});
 
-    return users.map((user) => ({
-      ...user,
-      posts: (postsByUserId[user.id] || []).map((post) => ({
+    const postsByUserId = posts.reduce((userPosts, post) => {
+      if (!userPosts[post.userId]) {
+        userPosts[post.userId] = [];
+      }
+      userPosts[post.userId].push({
         ...post,
         comments: commentsByPostId[post.id] || [],
-      })),
+      });
+      return userPosts;
+    }, {});
+
+    return users.map((user) => ({
+      ...user,
+      posts: postsByUserId[user.id] || [],
     }));
   }, [users, posts, comments]);
 
